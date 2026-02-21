@@ -1,0 +1,18 @@
+<header class="header">
+    <div>
+        <div class="clickable" onclick="window.location.href=`{{ url_for('web.home') }}`">
+            <img alt="Т-Банк" src="{{ url_for('styles', path='logo_new_year.png') }}"
+                 style="width: 40px; margin-top: -9px; margin-right: -11px">
+            <h1>Алгоритмы.</h1>
+        </div>
+        <h1>{{ title }}</h1>
+    </div>
+
+    <div>
+        {% if user %}
+        <button @click="logoutClicked()" class="white-btn">Выйти</button>
+        {% else %}
+        <button @click="{{ form_renderer.button_for(forms, 'common/login') }}" class="white-btn">Войти</button>
+        {% endif %}
+    </div>
+</header>

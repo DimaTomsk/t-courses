@@ -1,0 +1,14 @@
+:root {
+    --gray: #646464;
+    --gray-dark: #424242;
+    --gray-light: #757575;
+    --gray-ultralight: #d1d5db;
+
+    --yellow: #ffdd2d;
+    --yellow-light: #FFEE58;
+    --yellow-ultraligh: #FFF9C4;
+
+    --green-valid: #43A047;
+
+    --default-background: #f6f7f8;
+}

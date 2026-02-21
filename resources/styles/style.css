@@ -1,0 +1,159 @@
+
+
+/*html {*/
+/*  font-size: clamp(32px, 1.2vw + 12px, 32px);*/
+/*}*/
+
+.main {
+    width: max-content;
+    margin: 0 auto;
+    padding: 0;
+    padding-top: 60px;
+    display: flex;
+    height: calc(100vh - 60px);
+}
+
+/* HTML: <div class="loader"></div> */
+.loader {
+    width: 50px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(farthest-side, var(--yellow) 94%, #0000) top/8px 8px no-repeat,
+    conic-gradient(#0000 30%, var(--yellow));
+    -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 8px), #000 0);
+    animation: l13 1s infinite linear;
+}
+
+@keyframes l13 {
+    100% {
+        transform: rotate(1turn)
+    }
+}
+
+.sidebar-left {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    padding-top: 1em;
+    width: 16em;
+    float: left;
+    text-align: center;
+    position: relative;
+    padding-left: 2em;
+}
+
+.sidebar-right {
+    width: 15em;
+    float: right;
+    text-align: center;
+    position: relative;
+    padding-left: 2em;
+    padding-right: 2em;
+    padding-top: 1em;
+}
+
+.courses {
+    float: left;
+    padding-left: 2em;
+    width: 35em;
+}
+
+.photo {
+    width: 9em;
+    height: 9em;
+    border-radius: 0.5em;
+    /*box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);*/
+}
+
+.lesson_date {
+    display: inline-block;
+    margin-right: 1em;
+}
+
+.lesson_topic {
+    display: inline-block;
+    font-weight: bold;
+    margin-bottom: 0.5em;
+}
+
+.contest_name {
+    width: 15em;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.contest_link {
+    margin-right: 1em;
+    display: inline-block;
+}
+
+.course {
+    /*margin-bottom: 1em;*/
+    /*border-left: 3px solid #646464;*/
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+.course_hint {
+    position: absolute;
+    right: 0.25em;
+    top: 0.25em;
+    color: var(--gray);
+    font-weight: 900;
+    font-size: 0.75em;
+    background-color: var(--yellow-light);
+    border-radius: 0.725em;
+    padding: 0.1em 0.5em;
+}
+
+.no-border:hover {
+    border: 0;
+}
+
+.course h2 {
+    color: #2a6478;
+}
+
+.no-border {
+    border: 0;
+    color: black;
+}
+
+.course-badge h2 {
+    padding: 0;
+    margin: 0;
+}
+
+.course-badge {
+    background-color: white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0.725em;
+    /*padding: 1em;*/
+    /*padding-right: 1em;*/
+    padding-bottom: 1em;
+    padding-top: 1em;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+.links {
+    align-content: start;
+}
+
+
+.links a {
+    font-size: large;
+
+    display: inline-block;
+    margin-bottom: 3px; /* TODO: replace with em? */
+    /*display: block;*/
+    /*text-align: left;*/
+}
+
+.sidebar-left button {
+    width: 80%;
+}

@@ -1,0 +1,25 @@
+{% extends "base.j2" %}
+{% block head %}
+    <link href="{{ url_for('styles', path='standings.css?v=' + ui_version) }}" rel="stylesheet"/>
+    <script src="{{ url_for('scripts', path='standings.js?v=' + ui_version) }}"></script>
+{% endblock %}
+{% block main %}
+
+    <div style="position: relative; height: 100%; width: 100vw">
+        <div style="position: absolute;     top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: fit-content;
+       height: fit-content;
+">
+            <div class="loader"></div>
+        </div>
+
+        <div class="table-wrap" id="table-wrap" style="outline: none; box-shadow: none" tabindex="0">
+            <table>
+                <thead id="thead"></thead>
+                <tbody id="tbody"></tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,161 @@
+{% extends "base.j2" %}
+{% block main %}
+    <div class="sidebar-left">
+        <div class="course-badge flex-column">
+            {% if join_buttons %}
+                <h2>Запишитесь на курс</h2>
+                <div style="align-items: center" class="flex-column">
+                    {% for btn in join_buttons %}
+                        <button @click="{{ form_renderer.button_for(forms, 'tags/' + btn.tag, path='/api/account/join/' + btn.tag, user=user) }}"
+                                class="btn-dark light-btn">{{ btn.name }}</button>
+                    {% endfor %}
+                </div>
+            {% elif user %}
+                <h2>Привет, {{ user.get_field('name') }}</h2>
+            {% else %}
+                <h2>Запишитесь на курс</h2>
+                <div style="align-items: center" class="flex-column">
+                    <button @click="{{ form_renderer.button_for(forms, 'common/login') }}" class="btn-dark light-btn">
+                        Войти
+                    </button>
+                    <button @click="{{ form_renderer.button_for(forms, 'common/register') }}"
+                            class="btn-dark light-btn">
+                        Регистрация
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if links %}
+            <div class="links course-badge flex-column">
+                <h2>Полезные ссылки</h2>
+                <div>
+                    {% for link in links %}
+                        <a href="{{ link.url }}">{{ link.name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if lessons %}
+        <div class="courses">
+            <h2 style="padding-left: 0.5em">Материалы занятий</h2>
+            <div class="flex-column">
+                {% for lesson in lessons %}
+                    <div class="course course-badge">
+                        <div class="lesson_date"> {{ lesson.date }}</div>
+                        <div class="lesson_topic"> {{ lesson.title }}</div>
+
+                        {% for attachment in lesson.attachments | default([], true) %}
+                            <div>
+                                <div class="clear"></div>
+                                <a class="contest_link" href="{{ attachment.url }}">{{ attachment.name }}</a>
+                            </div>
+                        {% endfor %}
+
+                        <div class="clear"></div>
+
+                        {% if lesson.recordings %}
+                            <div class="contest_name">Запись занятия</div>
+
+                            {% if lesson.recordings.vkvideo %}
+                                {% set params = parse_vk_params(lesson.recordings.vkvideo) %}
+                                {% if params %}
+                                    {% if user is none %}
+                                        <a class="contest_link"
+                                           x-on:click="{{ form_renderer.button_for(forms, 'common/register', title='Зарегистрируйтесь, чтобы посмотреть записи') }}">VkVideo</a>
+                                    {% else %}
+                                        <a class="contest_link"
+                                           x-on:click="modal_mode={'type': 'vkvideo', 'lecture_name': '{{ lesson.title }}', 'oid': '{{ params['oid'] }}', 'id': '{{ params['id'] }}'}">VkVideo</a>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+
+                            {% if lesson.recordings.youtube %}
+                                {% set params = parse_yt_params(lesson.recordings.youtube) %}
+                                {% if params %}
+                                    {% if user is none %}
+                                        <a class="contest_link"
+                                           x-on:click="{{ form_renderer.button_for(forms, 'common/register', title='Зарегистрируйтесь, чтобы посмотреть записи') }}">YouTube</a>
+                                    {% else %}
+                                        <a class="contest_link"
+                                           x-on:click="modal_mode={'type': 'youtube', 'lecture_name': '{{ lesson.title }}', 'id': '{{ params['id'] }}'}">YouTube</a>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+
+                            <div class="clear"></div>
+                        {% endif %}
+
+                        {% set contest = lesson.contest %}
+
+                        {% if contest is not none %}
+                            <div class="contest_name">{{ contest.name }}</div>
+
+                            {% if check_contest_access(contest) %}
+                                <a class="contest_link"
+                                   href="{{ url_for('ejudge.login', course_name=course_name, contest_id=contest.id) }}">Вход</a>
+                            {% endif %}
+
+                            {% set statement_path = statement_exists(course_name, contest) %}
+                            {% if statement_path is not none %}
+                                <a class="contest_link" href="{{ url_for('files', path=statement_path) }}">Условия</a>
+                            {% endif %}
+
+                            {% if contest.show_standings %}
+                                <a class="contest_link"
+                                   href="{{ url_for('web.standings', course_name=course_name, table_name=contest.id) }}">Результаты</a>
+                            {% endif %}
+
+                            {% set deadline = deadline_for(contest) %}
+                            {% if deadline is not none %}
+                                <div class="contest_name">{{ deadline }}</div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if courses %}
+        <div class="courses">
+            <h2 style="padding-left: 0.5em">Курсы</h2>
+            <div class="flex-column">
+                {% for course in courses %}
+                    <a href="{{ course.link }}" class="no-border" style="position: relative">
+                        <div class="course course-badge flex-column">
+                            <h2>{{ course.title }}</h2>
+                            <div style="color: var(--gray);">
+                                {{ course.description }}
+                            </div>
+                            {% if course.hint %}
+                                <div class="course_hint">{{ course.hint }}</div>
+                            {% endif %}
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="sidebar-right">
+
+        {% if teachers %}
+            <div class="flex-column course-badge">
+                <h2>Преподаватели</h2>
+                {% for teacher in teachers %}
+                    <div>
+                        <img alt="{{ teacher.name }}" class="photo" src="{{ url_for('images', path=teacher.img) }}"><br>
+                        <b>{{ teacher.name }}</b>
+                        <br>
+                        Telegram: <a href="tg://resolve?domain={{ teacher.tg }}">@{{ teacher.tg }}</a>
+                        <br><br>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}

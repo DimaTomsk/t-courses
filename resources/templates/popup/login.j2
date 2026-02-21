@@ -1,0 +1,64 @@
+<template x-if="modal_mode['type'] === 'form'">
+    <div class="modal-form reg-form">
+        <h2 x-text="modal_mode['title']"></h2>
+
+        {% for name, form in forms.items() %}
+            <template x-if="currentForm() === '{{ name }}'">
+                <form @submit.prevent="formNextStep()">
+
+                    {{ form_renderer.render(form)|safe }}
+
+                    <template x-if="form_message">
+                        <div class="form-item">
+                            <div :class="form_message['type']" x-text="form_message['msg']"></div>
+                        </div>
+                    </template>
+
+                    <template x-if="modal_mode['sequence'].length === 1">
+                        <button class="light-btn" type="submit" name="next">{{ form.action }}</button>
+                    </template>
+
+                    <template x-if="modal_mode['sequence'].length !== 1">
+                        <div class="form-row" style="gap: 0.5em">
+                            <template x-if="modal_mode['pos'] + 1 === modal_mode['sequence'].length">
+                                <button class="light-btn" type="submit" name="next">{{ form.action }}</button>
+                            </template>
+                            <template x-if="modal_mode['pos'] + 1 !== modal_mode['sequence'].length">
+                                <button class="light-btn" type="submit" name="next">Далее</button>
+                            </template>
+
+                            <template x-if="modal_mode['pos'] !== 0">
+                                <button class="gray-btn" type="button" @click="formPrevStep()">Назад</button>
+                            </template>
+                        </div>
+                    </template>
+                </form>
+            </template>
+        {% endfor %}
+
+
+        <template x-if="currentForm() === 'common/login'">
+            <div class="form-footer">
+                <a x-on:click="{{ form_renderer.button_for(forms, 'common/register') }}">Создать аккаунт</a>
+                <span class="dot">•</span>
+                <a x-on:click="{{ form_renderer.button_for(forms, 'common/reset') }}">Забыли пароль?</a>
+            </div>
+        </template>
+
+        <template x-if="currentForm() === 'common/register'">
+            <div class="form-footer">
+                <a x-on:click="{{ form_renderer.button_for(forms, 'common/login') }}">Войти в аккаунт</a>
+                <span class="dot">•</span>
+                <a x-on:click="{{ form_renderer.button_for(forms, 'common/reset') }}">Забыли пароль?</a>
+            </div>
+        </template>
+
+        <template x-if="currentForm() === 'common/reset'">
+            <div class="form-footer">
+                <a x-on:click="{{ form_renderer.button_for(forms, 'common/login') }}">Войти в аккаунт</a>
+                <span class="dot">•</span>
+                <a x-on:click="{{ form_renderer.button_for(forms, 'common/register') }}">Создать аккаунт</a>
+            </div>
+        </template>
+    </div>
+</template>

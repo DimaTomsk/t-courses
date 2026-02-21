@@ -1,0 +1,19 @@
+{% extends "base.j2" %}
+{% block head %}
+{% endblock %}
+{% block main %}
+    <div style="position: relative; height: 100%; width: 100vw">
+        <div style="position: absolute;     top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: fit-content;
+       height: fit-content;
+">
+            <div class="loader"></div>
+        </div>
+        <iframe src="{{ contest_url }}"
+                style="height: 100%; width: 100vw; border: 0; position: absolute; left: 0; top: 0; z-index: 10"
+                id="contest-frame">
+        </iframe>
+    </div>
+{% endblock %}

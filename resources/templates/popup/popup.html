@@ -1,0 +1,15 @@
+<div :style="isNotModalMode() ? '' : 'display: flex;'" class="overlay" x-on:click="closeModal()">
+
+    <template x-if="modal_mode">
+        <div @click.stop="" class="modal-container">
+            <span class="close-btn clickable" x-on:click="closeModal()">&times;</span>
+
+            {% include "popup/login.j2" %}
+
+            {% include "popup/vkvideo.html" %}
+
+            {% include "popup/youtube.html" %}
+        </div>
+    </template>
+
+</div>

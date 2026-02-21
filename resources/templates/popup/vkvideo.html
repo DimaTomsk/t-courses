@@ -1,0 +1,11 @@
+<template x-if="modal_mode['type'] === 'vkvideo'">
+    <div class="video-container">
+        <h2 x-text='`Запись лекции "${modal_mode["lecture_name"]}"`'></h2>
+        <iframe :src="`https://vk.com/video_ext.php?oid=${modal_mode['oid']}&id=${modal_mode['id']}&hd=2&js_api=1`"
+                allow="autoplay; encrypted-media; fullscreen; picture-in-picture;"
+                allowfullscreen
+                frameborder="0"
+                height="480"
+                style="border-radius: 1em;  display: block;" width="853"></iframe>
+    </div>
+</template>

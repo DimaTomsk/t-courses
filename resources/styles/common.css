@@ -1,0 +1,64 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    background-color: var(--default-background);
+}
+
+a {
+    color: #2a6478;
+    text-decoration: none;
+    transition: 300ms;
+    border-bottom: 1px solid transparent;
+    cursor: pointer;
+}
+
+a:hover {
+    border-bottom: 1px solid #2a6478;
+}
+
+input::placeholder {
+    opacity: 0.6;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #FFF9C4 inset !important;
+}
+
+input[type="checkbox"]:focus {
+    outline: none;
+    border-color: #FFF9C4;
+    box-shadow: none !important;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+form label span {
+    color: coral;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance: textfield; /* Firefox */
+}
+
+::selection {
+    /*background-color: var(--yellow-light);*/
+    /*color: var(--gray);*/
+    /*-webkit-text-fill-color: var(--gray);*/
+}

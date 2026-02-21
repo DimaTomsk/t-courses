@@ -1,0 +1,24 @@
+.header {
+    background-color: var(--gray);
+    padding: 0.8em 1em;
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    top: 0;
+    width: calc(100% - 2em);
+    z-index: 10;
+}
+
+.header div {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.header h1 {
+    margin: 0;
+    color: white;
+    font-size: x-large;
+    font-weight: normal;
+}

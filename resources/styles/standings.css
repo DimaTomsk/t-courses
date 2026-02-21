@@ -1,0 +1,105 @@
+.table-wrap {
+    height: 100%;
+    overflow-x: auto;
+    max-width: 100vw;
+    width: 100vw;
+}
+
+thead {
+    position: sticky;
+    z-index: 1;
+    top: 0;
+}
+
+table {
+    border-spacing: 0;
+    width: 0;
+}
+
+thead th {
+    position: sticky;
+    /*background: #fff;*/
+    padding: 8px 6px;
+    /*border-bottom: 1px solid #ccc;*/
+    border: 0.5px solid gray;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.unmovable-header {
+    background: #fff;
+    z-index: 1;
+}
+
+
+.movable-header {
+    background: #fff;
+    max-width: 0;
+    white-space: normal;
+    word-break: keep-all;
+}
+
+tbody {
+    position: relative;
+}
+
+tbody tr {
+    height: 32px;
+}
+
+td {
+    padding: 6px 6px;
+    border: 0.5px solid gray;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+tbody tr:nth-child(even) td {
+    background-color: #f3f3ff;
+}
+
+tbody tr:nth-child(odd) td {
+    background-color: #ffffff;
+}
+
+
+tbody tr:hover td {
+    background: #fff3e5;
+}
+
+tbody tr:nth-child(even) td.ok,
+tbody tr:nth-child(odd) td.ok {
+    background-color: lightgreen;
+}
+
+tbody tr:nth-child(even) td.bad,
+tbody tr:nth-child(odd) td.bad {
+    background-color: lightcoral;
+}
+
+tbody tr:nth-child(even) td.upsolved,
+tbody tr:nth-child(odd) td.upsolved {
+    background-color: lightseagreen;
+}
+
+
+tbody tr:nth-child(even) td.not_upsolved,
+tbody tr:nth-child(odd) td.not_upsolved {
+    background-color: indianred;
+}
+
+.cell-item {
+    max-width: 22px;
+    min-width: 22px;
+    width: 22px;
+    overflow-wrap: normal;
+    text-align: center;
+    vertical-align: center;
+    overflow: visible;
+    text-overflow: clip;
+    font-size: small;
+}

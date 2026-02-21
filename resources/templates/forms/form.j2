@@ -1,0 +1,105 @@
+
+    {% for row in form.rows %}
+        <div class="form-row">
+            {% for item_name in row %}
+
+                {% set item = form.items[item_name] %}
+                <template x-if="{{ item.condition }}">
+
+                    <div class="form-item"
+                    >
+                        {% if item.type in ["text", "email", "date", "phone", "number", "password"] %}
+                            <label for="{{ item_name }}">
+                                {{ renderer.render_label(item.label)|safe }}{% if item.required %}<span>*</span>{% endif %}
+                            </label>
+                            <div
+                                    {% if form.icons %}
+                                        class="form-field"
+                                    {% endif %}
+                            >
+                                <input id="{{ item_name }}"
+                                       name="{{ item_name }}"
+                                       placeholder="{{ item.placeholder }}"
+                                        {% if item.required %}
+                                       required
+                                        {% endif %}
+                                       type="{{ item.type }}"
+
+                                        {% if item.type == "phone" %}
+                                       pattern="\+?[0-9\(\)\-\s]{10,}"
+                                        {% endif %}
+
+                                       x-model="form_data['{{ item_name }}']">
+                            </div>
+                        {% elif item.type == "checkbox" %}
+                            <label for="{{ item_name }}" style="font-size: small">
+                                <input id="{{ item_name }}" name="{{ item_name }}"
+                                        {% if item.required %}
+                                       required
+                                        {% endif %}
+                                       style="vertical-align: -0.4em;" type="checkbox"
+                                       x-model="form_data['{{ item_name }}']">
+                                {{ renderer.render_label(item.label)|safe }}
+                                {% if item.required %}
+                                    <span>*</span>
+                                {% endif %}
+                            </label>
+                        {% elif item.type == "selector" %}
+                            <label for="{{ item_name }}">
+                                {{ renderer.render_label(item.label)|safe }}{% if item.required %}<span>*</span>{% endif %}
+                            </label>
+                            <div
+                                    {% if form.icons %}
+                                        class="form-field select-wrap"
+                                    {% else %}
+                                        class="select-wrap"
+                                    {% endif %}
+                            >
+                                <select id="{{ item_name }}" name="{{ item_name }}"
+                                        {% if item.required %}
+                                        required
+                                        {% endif %}
+                                        x-model="form_data['{{ item_name }}']">"
+                                    >
+                                    <option value="" selected hidden>
+                                        Выберите...
+                                    </option>
+                                    {% for opt in item.options %}
+                                        <option value="{{ opt }}">{{ opt }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        {% elif item.type == "big_text" %}
+                            <label for="{{ item_name }}">{{ renderer.render_label(item.label)|safe }}
+                                {% if item.required %}
+                                    <span>*</span>
+                                {% endif %}
+                            </label>
+                            <textarea id="{{ item_name }}" placeholder=" "
+                                    {% if item.required %}
+                                      required
+                                    {% endif %}
+                                      type="{{ item.type }}"
+                                      x-model="form_data['{{ item_name }}']">
+                                </textarea>
+                        {% elif item.type == "info" %}
+                            <div class="info">
+                                <svg width="0.8em" height="0.8em" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10
+                 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                                </svg>
+
+                                {{ renderer.render_label(item.label)|safe }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </template>
+            {% endfor %}
+        </div>
+
+    {% endfor %}
+    {% if form.captcha %}
+        <div class="form-row" x-init="onCaptchaLoad($refs.captcha)">
+            <div style="width: 100%" id="captcha-container" x-ref="captcha"></div>
+        </div>
+    {% endif %}
