@@ -6,7 +6,6 @@ import dotenv
 from aiomysql import Pool
 from loguru import logger
 from pymongo import MongoClient
-from pymysql import OperationalError
 
 dotenv.load_dotenv("secrets/.env")
 from asyncio import Task
@@ -76,7 +75,7 @@ async def lifespan(app: FastAPI):
             db="ejudge",
         )
         tasks.add(asyncio.create_task(start_load(app.state.mysql_pool)))
-    except OperationalError as e:
+    except Exception as e:
         app.state.mysql_pool = None
         logger.warning(f"Mysql initialization failed! {e}")
 
