@@ -2,5 +2,7 @@
 .idea
 secrets/production.env
 secrets/test.env
+secrets/private_config_key
+secrets/github_known_hosts
 __pycache__/
 configs

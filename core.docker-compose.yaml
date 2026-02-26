@@ -1,0 +1,10 @@
+services:
+  t-courses:
+    container_name: t-courses
+#    restart: unless-stopped
+    build: .
+    volumes:
+      - /home/dimon/remote/configs:/app/configs
+      - /home/judges:/home/judges:ro
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: host

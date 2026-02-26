@@ -9,16 +9,17 @@ from loguru import logger
 from app.forms.form import Form
 from app.models.config import GlobalConfig, Course, Page
 
-DEFAULT_CONFIG_PATH = "configs"
-REPO_NAME = "t-edu-config"
+CONFIGS_PATH = Path("configs")
 
-REPO_FULL_PATH = "git@github.com:DimaTomsk/t-edu-config.git"
+REPO_NAME = "t-edu-config"
+MAIN_BRANCH = "main"
+REPO_FULL_PATH = f"git@github.com:DimaTomsk/{REPO_NAME}.git"
 
 
 class ConfigLoader:
-    def __init__(self, config_path: str = DEFAULT_CONFIG_PATH) -> None:
-        assert Path(config_path).exists()
-        self.config_path: Path = Path(config_path) / REPO_NAME
+    def __init__(self) -> None:
+        assert CONFIGS_PATH.exists()
+        self.config_path: Path = CONFIGS_PATH / REPO_NAME
         if not self.config_path.exists():
             self.update()
 
@@ -33,8 +34,9 @@ class ConfigLoader:
             try:
                 if self.config_path.exists():
                     repo = Repo(self.config_path)
-                    origin = repo.remotes.origin
-                    origin.pull()
+                    origin = repo.remote()
+                    origin.fetch()
+                    repo.git.reset("--hard", f"origin/{repo.active_branch.name}")
                 else:
                     Repo.clone_from(REPO_FULL_PATH, self.config_path)
 
