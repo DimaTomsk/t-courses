@@ -1,4 +1,13 @@
 {% extends "base.j2" %}
+
+{% block extra_header_buttons %}
+    <div>
+        <button @click="window.open('{{ contest_url }}','_blank','noopener,noreferrer')" class="white-btn">Открыть в
+            новой вкладке
+        </button>
+    </div>
+{% endblock %}
+
 {% block head %}
 {% endblock %}
 {% block main %}
@@ -7,7 +16,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     width: fit-content;
-       height: fit-content;
+    height: fit-content;
 ">
             <div class="loader"></div>
         </div>

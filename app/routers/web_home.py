@@ -16,7 +16,7 @@ from app.models.config import Course, Page, Contest
 from app.routers.authenticator import UserSession
 from app.storage.user_storage import UserStorage
 
-UI_VERSION = "19"
+UI_VERSION = "20"
 
 
 class WebHome:
@@ -61,6 +61,12 @@ class WebHome:
             self.web_course,
             methods=["GET"],
             name="web.course",
+        )
+        self._router.add_api_route(
+            "/courses/{course_name}/contest/{contest_id}",
+            self.web_contest,
+            methods=["GET"],
+            name="web.contest",
         )
         self._router.add_api_route(
             "/courses/{course_name}/standings/{table_name}",
@@ -147,15 +153,19 @@ class WebHome:
 
         join_buttons = []
 
+        user_tags = []
+        if user_session.user is not None:
+            user_tags = user_session.user.get_tags()
+
         if user_session.user is not None:
             for button in course.join_buttons:
-                if button.tag not in user_session.user.get_tags():
+                if button.tag not in user_tags:
                     join_buttons.append(button)
 
         def check_contest_access(contest: Contest) -> bool:
             if user_session.user is None:
                 return False
-            return contest.tag in user_session.user.get_tags()
+            return contest.tag in user_tags
 
         # TODO: check user's deadline here
         def deadline_for(contest: Contest) -> Optional[str]:
@@ -203,7 +213,7 @@ class WebHome:
         if course.get_contests_for_table(table_name) is None:
             raise HTTPException(status_code=404)
 
-        return self.templates.TemplateResponse(
+        response = self.templates.TemplateResponse(
             name="standings.j2",
             request=request,
             context={
@@ -218,6 +228,44 @@ class WebHome:
                 "ui_version": UI_VERSION,
             },
         )
+        return user_session.update_cookie(response)
+
+    async def web_contest(
+        self,
+        course_name: str,
+        contest_id: str,
+        user_session: Annotated[UserSession, Depends()],
+        request: Request,
+    ) -> HTMLResponse:
+        try:
+            contest_id = int(contest_id)
+        except ValueError:
+            raise HTTPException(status_code=404)
+        if user_session.user is None:
+            return RedirectResponse(url=f"/courses/{course_name}", status_code=302)
+        config = self._config_loader.get_config()
+        if course_name not in config.course_config:
+            raise HTTPException(status_code=404)
+
+        contests_by_tags = config.course_config[course_name].get_contests_by_tags(
+            user_session.user.get_tags()
+        )
+        if contest_id not in contests_by_tags:
+            return RedirectResponse(url=f"/courses/{course_name}", status_code=302)
+
+        response = self.templates.TemplateResponse(
+            name="contest.j2",
+            request=request,
+            context={
+                "title": "Контест",
+                "user": user_session.user,
+                "forms": config.forms_config,
+                "form_renderer": self._form_renderer,
+                "contest_url": f"/api/ejudge/login/{course_name}/{contest_id}",
+                "ui_version": UI_VERSION,
+            },
+        )
+        return user_session.update_cookie(response)
 
     async def web_notfound(self, request: Request) -> HTMLResponse:
         archive_url = request.url.replace(scheme="https", netloc="old.algocourses.ru")

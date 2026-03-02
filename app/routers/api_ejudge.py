@@ -37,23 +37,23 @@ class ApiEjudge:
         self,
         course_name: str,
         contest_id: int,
-        session_user: Annotated[UserSession, Depends()],
+        user_session: Annotated[UserSession, Depends()],
     ) -> RedirectResponse:
-        if session_user.user is None:
+        if user_session.user is None:
             return RedirectResponse(url="/", status_code=302)
         config = self._config_loader.get_config()
         if course_name not in config.course_config:
             return RedirectResponse(url="/", status_code=302)
 
         contests_by_tags = config.course_config[course_name].get_contests_by_tags(
-            session_user.user.get_tags()
+            user_session.user.get_tags()
         )
         if contest_id not in contests_by_tags:
-            return RedirectResponse(url=f"/{course_name}", status_code=302)
+            return RedirectResponse(url=f"/courses/{course_name}", status_code=302)
 
         result = await perform_login(
             str(contest_id),
-            session_user.user.get_login(),
+            user_session.user.get_login(),
         )
         if result is None:
             return RedirectResponse(url=f"/courses/{course_name}", status_code=302)
