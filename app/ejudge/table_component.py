@@ -10,7 +10,7 @@ from aiomysql import Connection, Pool
 from loguru import logger
 from pydantic import BaseModel
 
-from app.ejudge.config_parser import EjudgeConfigReader
+from app.ejudge.config_parser import EjudgeConfigReader, SubConfig
 from app.engine.config_loader import ConfigLoader
 from app.storage.user_storage import UserStorage
 
@@ -159,7 +159,12 @@ class TableComponent:
         if config is None:
             return None
 
-        count = len(config.dirs["problem"])
+        configs: list[SubConfig] = [
+            problem
+            for problem in config.dirs["problem"]
+            if "abstract" not in problem.flags
+        ]
+        count = len(configs)
         score_system = config.dirs[""][0].args.get("score_system", "")
         if score_system not in ["kirov", "acm"]:
             logger.warning(
@@ -168,7 +173,7 @@ class TableComponent:
             return None
 
         problems = []
-        for pos, item in enumerate(config.dirs["problem"]):
+        for pos, item in enumerate(configs):
             short = item.args.get("short_name", chr(ord("A") + pos))
             long = item.args.get("long_name", "")
             problems.append(ProblemInfo(short=short, long=long))
