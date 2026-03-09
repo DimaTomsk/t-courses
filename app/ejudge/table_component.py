@@ -40,15 +40,14 @@ class ProblemInfo(BaseModel):
 class ContestInfo(BaseModel):
     contest_id: int
     task_number: int
-    name: str
     problems: list[ProblemInfo]
     is_acm: bool
 
-    def serialize_for_public_api(self) -> dict:
+    def serialize_for_public_api(self, name: str) -> dict:
         return {
             "contest_id": self.contest_id,
             "task_number": self.task_number,
-            "name": self.name,
+            "name": name,
             "problems": [
                 problem.serialize_for_public_api() for problem in self.problems
             ],
@@ -180,7 +179,6 @@ class TableComponent:
 
         return ContestInfo(
             task_number=count,
-            name=config.pretty_name,
             problems=problems,
             contest_id=contest_id,
             is_acm=(score_system == "acm"),

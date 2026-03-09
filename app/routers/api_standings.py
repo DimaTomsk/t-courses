@@ -49,24 +49,25 @@ class ApiStandings:
                 status_code=404, content={"message": "Standings not found"}
             )
 
+        meta: dict[int, tuple[datetime, str]] = {}
+        for lesson in course.lessons:
+            contest = lesson.contest
+            meta[contest.id] = (contest.deadline.absolute, lesson.title)
+
         good_contests = [
             contest_id
             for contest_id in table.contests
-            if contest_id in self._table_component.cache
+            if contest_id in self._table_component.cache and contest_id in meta
         ]
-        headers: list[ContestInfo] = []
+
+        headers: list[dict] = []
 
         all_users: set[str] = set()
 
         for contest_id in good_contests:
             cache = self._table_component.cache[contest_id]
-            headers.append(cache.header.serialize_for_public_api())
+            headers.append(cache.header.serialize_for_public_api(meta[contest_id][1]))
             all_users |= cache.users.keys()
-
-        deadlines: dict[int, datetime] = {}
-        for lesson in course.lessons:
-            contest = lesson.contest
-            deadlines[contest.id] = contest.deadline.absolute
 
         standings = []
         for login in all_users:
@@ -74,8 +75,7 @@ class ApiStandings:
             if user is None:
                 continue
             with_deadlines = [
-                (contest_id, deadlines.get(contest_id, datetime.max))
-                for contest_id in good_contests
+                (contest_id, meta[contest_id][0]) for contest_id in good_contests
             ]
             data = self._table_component.get_user_score(login, with_deadlines)
             data["name"] = f"{user.get_field('surname')} {user.get_field('name')}"

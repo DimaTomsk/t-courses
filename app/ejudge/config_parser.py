@@ -13,7 +13,6 @@ class SubConfig:
 @dataclass
 class ContestConfig:
     name: str
-    pretty_name: str
     dirs: dict[str, list[SubConfig]]
 
     def push_to_section(self, section: str) -> SubConfig:
@@ -22,22 +21,6 @@ class ContestConfig:
         subconfig = SubConfig([], {})
         self.dirs[section].append(subconfig)
         return subconfig
-
-
-def get_pretty_name(name: str) -> str:
-    name = name.strip()
-    for x in [
-        "Т-Поколение 2025-2026. C",
-        "Т-Поколение 2025-2026. Bp",
-        "Т-Поколение 2025-2026. B",
-        "Т-Поколение 2025-2026. X",
-        "Т-Поколение 2025-2026. Bp Дистуры.",
-        "Т-Поколение 2025-2026. B Дистуры.",
-        "Т-Поколение 2025-2026. X Дистуры.",
-        "Т-Поколение 2025-2026. Провинутые лекции.",
-    ]:
-        name = name.replace(x, "").strip()
-    return name
 
 
 def remove_quotes(s: str) -> str:
@@ -60,7 +43,7 @@ class EjudgeConfigReader:
         tree = ET.parse(xml_config)
         root = tree.getroot()
         name = root.find("name").text
-        result = ContestConfig(name, get_pretty_name(name), {})
+        result = ContestConfig(name, {})
 
         with open(cfg_file, "rt", encoding="utf-8") as cfg_file_read:
             current_section = result.push_to_section("")
